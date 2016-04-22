@@ -1,0 +1,19 @@
+Line 1
+http://content.2500city.com/Json?method=SearchBusLine&appVersion=3.6&deviceID=358094050288555&lineName=1
+
+LineDetail 1
+http://content.2500city.com/Json?method=GetBusLineDetail&appVersion=3.6&deviceID=358094050288555&Guid=9d090af5-c5c6-4db8-b34e-2e8af4f63216
+
+StopDetail 
+http://content.2500city.com/Json?method=GetBusStationDetail&appVersion=3.6&deviceID=358094050288555&NoteGuid=EAH
+
+dun huang lu 
+http://content.2500city.com/Json?method=SearchBusStation&appVersion=3.6&deviceID=358094050288555&standName=%E6%95%A6%E7%85%8C%E8%B7%AF
+
+
+http://content.2500city.com/Json?method=GetBusStationDetail&appVersion=3.6&deviceID=358094050288555&NoteGuid=DCH
+
+
+
+
+http://content.2500city.com/api/map/map/getPoiNameByKeyword [POST]

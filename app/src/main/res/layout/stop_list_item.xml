@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.haikuowuya.bl.model.StopItem"/>
+
+        <variable
+            name="stopItem"
+            type="StopItem"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@{stopItem.lineNo}"
+            tools:text="zhagnsan"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@{stopItem.lineName}"
+            tools:text="zhagnsan"/>
+
+        <TextView
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="2"
+
+            android:text="@{stopItem.stopCar}"
+            tools:text="zhagnsan"/>
+
+        <TextView
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@{stopItem.stopCarTime}"
+            tools:text="zhagnsan"/>
+
+        <TextView
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@{stopItem.stopSpacing}"
+            tools:text="zhagnsan"/>
+    </LinearLayout>
+</layout>

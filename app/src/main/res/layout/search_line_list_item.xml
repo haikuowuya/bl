@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.haikuowuya.bl.model.SearchLine"/>
+
+        <variable
+            name="searchLine"
+            type="SearchLine"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="4"
+            android:maxLines="2"
+            android:text="@{searchLine.lineNo}"
+            tools:text="zhagnsan"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            tools:text="zhagnsan"
+            android:maxLines="2"
+            android:text="@{searchLine.lineName}"/>
+    </LinearLayout>
+</layout>
