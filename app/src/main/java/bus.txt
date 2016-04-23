@@ -14,6 +14,25 @@ http://content.2500city.com/Json?method=SearchBusStation&appVersion=3.6&deviceID
 http://content.2500city.com/Json?method=GetBusStationDetail&appVersion=3.6&deviceID=358094050288555&NoteGuid=DCH
 
 
-
-
 http://content.2500city.com/api/map/map/getPoiNameByKeyword [POST]
+
+
+
+//mo hu sou suo 1
+http://content.2500city.com/api18/bus/searchLine?name=1
+
+
+
+//=========================================================================================NEW =================
+ search 8
+http://content.2500city.com/api18/bus/searchLine?name=8
+
+ search 18
+http://content.2500city.com/api18/bus/getLineInfo?sign=539f272911d2bb23117ea6211cce1bb5&uid=0&lng=120.780724&Guid=b715fc37-ae47-46fc-bdfb-06819fdec24e&DeviceID=12345678&lat=31.316567
+http://content.2500city.com/api18/bus/getLineInfo?Guid=b715fc37-ae47-46fc-bdfb-
+
+
+
+guo ji ke ji yuan
+http://content.2500city.com/api18/bus/getStationInfo?sign=539f272911d2bb23117ea6211cce1bb5&uid=0&NoteGuid=DEP&lng=120.780724&DeviceID=12345678&lat=31.316567
+

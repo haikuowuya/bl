@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.haikuowuya.bl.model.SearchLine"/>
+        <import type="com.haikuowuya.bl.model.SearchLineModel"/>
 
         <variable
             name="searchLine"
-            type="SearchLine"/>
+            type="SearchLineModel"/>
     </data>
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:gravity="center"
             android:layout_weight="4"
             android:maxLines="2"
-            android:text="@{searchLine.lineNo}"
+            android:text="@{searchLine.LName}"
             tools:text="zhagnsan"/>
 
         <TextView
@@ -31,6 +31,6 @@
             android:layout_weight="1"
             tools:text="zhagnsan"
             android:maxLines="2"
-            android:text="@{searchLine.lineName}"/>
+            android:text="@{searchLine.LDirection}"/>
     </LinearLayout>
 </layout>

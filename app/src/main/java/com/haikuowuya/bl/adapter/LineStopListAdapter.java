@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.databinding.LineStopListItemBinding;
-import com.haikuowuya.bl.model.LineStop;
+import com.haikuowuya.bl.model.LineStopModel;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -24,9 +24,9 @@ import java.util.LinkedList;
  **/
 public class LineStopListAdapter extends BaseAdapter
 {
-    private LinkedList<LineStop> mLineStops;
+    private LinkedList<LineStopModel> mLineStops;
 
-    public LineStopListAdapter(LinkedList<LineStop> lineStops)
+    public LineStopListAdapter(LinkedList<LineStopModel> lineStops)
     {
         mLineStops = lineStops;
     }
@@ -63,11 +63,11 @@ public class LineStopListAdapter extends BaseAdapter
         {
             lineStopListItemBinding = (LineStopListItemBinding) convertView.getTag();
         }
-        LineStop lineStop = mLineStops.get(position);
+        LineStopModel lineStop = mLineStops.get(position);
         lineStopListItemBinding.setLineStop(lineStop);
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) lineStopListItemBinding.ivBus.getLayoutParams();
-        if (!TextUtils.isEmpty(lineStop.stopCarTime) && !TextUtils.isEmpty(lineStop.stopCar))
+        if (!TextUtils.isEmpty(lineStop.BusInfo) && !TextUtils.isEmpty(lineStop.InTime))
         {
             if (!isArrivedValidated(lineStop))
             {
@@ -104,7 +104,7 @@ public class LineStopListAdapter extends BaseAdapter
      * @param lineStop
      * @return true：到站车辆有效
      */
-    private boolean isArrivedValidated(LineStop lineStop)
+    private boolean isArrivedValidated(LineStopModel lineStop)
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -112,10 +112,10 @@ public class LineStopListAdapter extends BaseAdapter
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int hourOfDay = 0, minute = 0, second = 0;
-        if (!TextUtils.isEmpty(lineStop.stopCarTime)
-                && lineStop.stopCarTime.contains(":"))
+        if (!TextUtils.isEmpty(lineStop.InTime)
+                && lineStop.InTime.contains(":"))
         {
-            String[] tmp = lineStop.stopCarTime.split(":");
+            String[] tmp = lineStop.InTime.split(":");
             hourOfDay = Integer.parseInt(tmp[0]);
             minute = Integer.parseInt(tmp[1]);
             second = Integer.parseInt(tmp[2]);

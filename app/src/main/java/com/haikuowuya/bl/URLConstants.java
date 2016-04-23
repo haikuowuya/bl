@@ -12,11 +12,14 @@ public class URLConstants
     /**
      * 无线苏州公交API
      */
-    public static final String  BASE_API_URL="http://content.2500city.com/Json";
+    public static final String  BASE_API_URL="http://content.2500city.com/";
+
+
+    public static  final  String BASE_API_18_URL=BASE_API_URL +"api18/bus/";
     /***
      * 根据公交线路编号查询公交线路信息
      */
-    public  static  final  String SEARCH_BUS_LINE_BY_LINE_NO=BASE_API_URL+"?method=SearchBusLine&lineName=%s";
+    public  static  final  String SEARCH_BUS_LINE_BY_LINE_NO=BASE_API_URL+"Json?method=SearchBusLine&lineName=%s";
     /***
      * 公交线路查询前缀
      */

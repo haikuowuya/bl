@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.databinding.StopListItemBinding;
-import com.haikuowuya.bl.model.StopItem;
+import com.haikuowuya.bl.model.StopModel;
 
 import java.util.LinkedList;
 
@@ -21,9 +21,9 @@ import java.util.LinkedList;
  **/
 public class StopListAdapter extends BaseAdapter
 {
-    private LinkedList<StopItem> mStopItems;
+    private LinkedList<StopModel> mStopItems;
 
-    public StopListAdapter(LinkedList<StopItem> stopItems)
+    public StopListAdapter(LinkedList<StopModel> stopItems)
     {
         mStopItems = stopItems;
     }

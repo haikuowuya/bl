@@ -5,11 +5,11 @@
 
     <data>
 
-        <import type="com.haikuowuya.bl.model.StopItem"/>
+        <import type="com.haikuowuya.bl.model.StopModel"/>
 
         <variable
             name="stopItem"
-            type="StopItem"/>
+            type="StopModel"/>
     </data>
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@{stopItem.lineNo}"
+            android:text="@{stopItem.LName}"
             tools:text="zhagnsan"/>
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@{stopItem.lineName}"
+            android:text="@{stopItem.LDirection}"
             tools:text="zhagnsan"/>
 
         <TextView
@@ -40,7 +40,7 @@
             android:gravity="center"
             android:maxLines="2"
 
-            android:text="@{stopItem.stopCar}"
+            android:text="@{stopItem.DBusCard}"
             tools:text="zhagnsan"/>
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@{stopItem.stopCarTime}"
+            android:text="@{stopItem.InTime}"
             tools:text="zhagnsan"/>
 
         <TextView
@@ -56,7 +56,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@{stopItem.stopSpacing}"
+            android:text="@{stopItem.Distince}"
             tools:text="zhagnsan"/>
     </LinearLayout>
 </layout>

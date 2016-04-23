@@ -3,7 +3,6 @@ package com.haikuowuya.bl.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,21 +16,20 @@ import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.adapter.LineStopListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
-import com.haikuowuya.bl.model.LineStop;
-import com.haikuowuya.bl.model.SearchLine;
-import com.haikuowuya.bl.util.SoutUtils;
+import com.haikuowuya.bl.model.BaseLineStopModel;
+import com.haikuowuya.bl.model.LineStopModel;
+import com.haikuowuya.bl.model.SearchLineModel;
+import com.haikuowuya.bl.retrofit.SearchLineService;
 import com.haikuowuya.bl.util.ToastUtils;
 
-import org.jsoup.helper.DataUtil;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 说明:
@@ -52,18 +50,9 @@ public class LineFragment extends BaseFragment
     }
 
     private FragmentLineBinding mFragmentLineBinding;
-    private SearchLine mSearchLine;
+    private SearchLineModel mSearchLine;
 
     private int mListSelection = 0;
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg)
-        {
-            super.handleMessage(msg);
-            mListSelection = mFragmentLineBinding.lvListview.getSelectedItemPosition();
-            new Thread(mAutoRefreshRunnable).start();
-        }
-    };
 
     @Nullable
     @Override
@@ -79,108 +68,50 @@ public class LineFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         if (null != getArguments() && null != getArguments().getSerializable(LineActivity.EXTRA_SEARCH_LINE))
         {
-            mSearchLine = (SearchLine) getArguments().getSerializable(LineActivity.EXTRA_SEARCH_LINE);
+            mSearchLine = (SearchLineModel) getArguments().getSerializable(LineActivity.EXTRA_SEARCH_LINE);
         }
-        if (null != mSearchLine)
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(URLConstants.BASE_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final SearchLineService searchLineService = retrofit.create(SearchLineService.class);
+        searchLineService.getBusLineDetail("GetBusLineDetail",mSearchLine.Guid).enqueue(new Callback<BaseLineStopModel>()
         {
-            new Thread(mAutoRefreshRunnable).start();
-        }
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        mHandler.removeCallbacks(mAutoRefreshRunnable);
-    }
-
-
-
-    private  Runnable mAutoRefreshRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            final LinkedList<LineStop> lineStops = new LinkedList<>();
-            try
+            @Override
+            public void onResponse(Call<BaseLineStopModel> call, Response<BaseLineStopModel> response)
             {
-                SoutUtils.out("lineHref = " + mSearchLine.lineHref);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(mSearchLine.lineHref).openConnection();
-                int responseCode = httpURLConnection.getResponseCode();
-                if (httpURLConnection != null && responseCode == 200)
+                if(response.isSuccessful())
                 {
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    Document document = DataUtil.load(inputStream, "utf-8", "");
-                    if (null != document)
+                    LinkedList<LineStopModel> standInfo = response.body().list.StandInfo;
+                    if(null != standInfo &&!standInfo.isEmpty())
                     {
-                        Element element = document.getElementsByTag("tbody").get(0);
-                        Elements trElements = element.getElementsByTag("tr");
-                        if (null != trElements && !trElements.isEmpty())
+                        mListSelection = mFragmentLineBinding.lvListview.getSelectedItemPosition();
+                        mFragmentLineBinding.lvListview.setAdapter(new LineStopListAdapter(standInfo));
+                        mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
                         {
-                            if (trElements.size() > 1)
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                             {
-                                for (Element tmpElement : trElements)
-                                {
-                                    Elements tdElements = tmpElement.getElementsByTag("td");
-
-                                    if (null != tdElements && tdElements.size() == 4)
-                                    {
-                                        LineStop lineStop = new LineStop();
-                                        String stopHref;
-                                        String stopName;
-                                        String stopCode;
-                                        String stopCar;
-                                        String stopCarTime;
-                                        Element aElement = tdElements.get(0).getElementsByTag("a").get(0);
-                                        stopName = aElement.text();
-                                        stopHref = URLConstants.BUS_LINE_QUERY_PREFIX + aElement.attr("href");
-                                        stopCode = tdElements.get(1).text();
-                                        stopCar = tdElements.get(2).text();
-                                        stopCarTime = tdElements.get(3).text();
-                                        lineStop.stopCar = stopCar;
-                                        lineStop.stopCarTime = stopCarTime;
-                                        lineStop.stopCode = stopCode;
-                                        lineStop.stopName = stopName;
-                                        lineStop.stopHref = stopHref;
-                                        lineStops.add(lineStop);
-                                    }
-                                }
-                                mActivity.runOnUiThread(new Runnable()
-                                {
-                                    public void run()
-                                    {
-                                        mFragmentLineBinding.lvListview.setAdapter(new LineStopListAdapter(lineStops));
-                                        mFragmentLineBinding.lvListview.setSelection(mListSelection);
-                                        mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                                        {
-                                            @Override
-                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                                            {
-                                                LineStop lineStop = (LineStop) parent.getItemAtPosition(position);
-                                                StopActivity.actionStop(mActivity, lineStop);
-                                            }
-                                        });
-                                    }
-                                });
+                                LineStopModel lineStopModel = (LineStopModel) parent.getItemAtPosition(position);
+                                StopActivity.actionStop(mActivity, lineStopModel);
                             }
-                            else
-                            {
-                                mActivity.runOnUiThread(new Runnable()
-                                {
-                                    public void run()
-                                    {
-                                        ToastUtils.showShortToast(mActivity, "没有数据");
-                                    }
-                                });
-                            }
-                        }
+                        });
+                        mFragmentLineBinding.lvListview.setSelection(mListSelection);
+                    }
+                    else
+                    {
+                         ToastUtils.showShortToast(mActivity,"没有数据");
                     }
                 }
-                mHandler.sendEmptyMessageDelayed(0,20*1000L);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
             }
-        }
-    };
+
+            @Override
+            public void onFailure(Call<BaseLineStopModel> call, Throwable t)
+            {
+
+            }
+        });
+
+
+
+    }
 }

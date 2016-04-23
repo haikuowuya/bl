@@ -15,22 +15,20 @@ import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.adapter.StopListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
-import com.haikuowuya.bl.model.LineStop;
-import com.haikuowuya.bl.model.SearchLine;
-import com.haikuowuya.bl.model.StopItem;
-import com.haikuowuya.bl.util.SoutUtils;
-import com.haikuowuya.bl.util.ToastUtils;
+import com.haikuowuya.bl.model.BaseStopModel;
+import com.haikuowuya.bl.model.LineStopModel;
+import com.haikuowuya.bl.model.SearchLineModel;
+import com.haikuowuya.bl.model.StopModel;
+import com.haikuowuya.bl.retrofit.SearchLineService;
 
-import org.jsoup.helper.DataUtil;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 说明:
@@ -51,7 +49,7 @@ public class StopFragment extends BaseFragment
     }
 
     private FragmentLineBinding mFragmentLineBinding;
-    private LineStop mLineStop;
+    private LineStopModel mLineStop;
 
     @Nullable
     @Override
@@ -67,17 +65,55 @@ public class StopFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         if (null != getArguments() && null != getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP))
         {
-            mLineStop = (LineStop) getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP);
+            mLineStop = (LineStopModel) getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP);
         }
+
+        Retrofit retrofit= new Retrofit.Builder().baseUrl(URLConstants.BASE_API_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        SearchLineService searchLineService = retrofit.create(SearchLineService.class);
+        searchLineService.getBusStopDetail("GetBusStationDetail",mLineStop.SCode).enqueue(new Callback<BaseStopModel>()
+        {
+            @Override
+            public void onResponse(Call<BaseStopModel> call, Response<BaseStopModel> response)
+            {
+                    if(response.isSuccessful())
+                    {
+                        LinkedList<StopModel> stopModels = response.body().list;
+                        if(null != stopModels &&!stopModels.isEmpty())
+                        {
+                            mFragmentLineBinding.lvListview.setAdapter(new StopListAdapter(stopModels));
+                            mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                            {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                                {
+                                    StopModel stopModel = (StopModel) parent.getItemAtPosition(position);
+                                    SearchLineModel searchLine = new SearchLineModel();
+                                    searchLine.LName = stopModel.LName;
+                                    searchLine.Guid = stopModel.Guid;
+                                    searchLine.LDirection = stopModel.LDirection;
+                                    LineActivity.actionLine(mActivity,searchLine);
+                                }
+                            });
+                        }
+                    }
+            }
+            @Override
+            public void onFailure(Call<BaseStopModel> call, Throwable t)
+            {
+
+            }
+        });
+
         if (null != mLineStop)
         {
-            final LinkedList<StopItem> stopItems = new LinkedList<>();
+            final LinkedList<StopModel> stopItems = new LinkedList<>();
             new Thread()
             {
                 public void run()
                 {
                     try
                     {
+                        /*
                         SoutUtils.out("lineHref = " + mLineStop.stopHref);
                         HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(mLineStop.stopHref).openConnection();
                         int responseCode = httpURLConnection.getResponseCode();
@@ -113,7 +149,7 @@ public class StopFragment extends BaseFragment
                                                 stopCar = tdElements.get(2).text();
                                                 stopCarTime = tdElements.get(3).text();
                                                 stopSpacing = tdElements.get(4).text();
-                                                StopItem stopItem = new StopItem();
+                                                StopModel stopItem = new StopModel();
                                                 stopItem.lineHref = lineHref;
                                                 stopItem.lineNo = lineNo;
                                                 stopItem.stopCar = stopCar;
@@ -133,7 +169,7 @@ public class StopFragment extends BaseFragment
                                                     @Override
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                                                     {
-                                                        StopItem stopItem = (StopItem) parent.getItemAtPosition(position);
+                                                        StopModel stopItem = (StopModel) parent.getItemAtPosition(position);
                                                         SearchLine searchLine = new SearchLine();
                                                         searchLine.lineHref = stopItem.lineHref;
                                                         searchLine.lineNo = stopItem.lineNo;
@@ -157,6 +193,7 @@ public class StopFragment extends BaseFragment
                                 }
                             }
                         }
+                        */
 
                     } catch (Exception e)
                     {

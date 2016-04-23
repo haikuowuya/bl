@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.databinding.SearchLineListItemBinding;
 import com.haikuowuya.bl.model.SearchLine;
+import com.haikuowuya.bl.model.SearchLineModel;
 
 import java.util.LinkedList;
 
@@ -21,9 +22,9 @@ import java.util.LinkedList;
  **/
 public class SearchLineListAdapter extends BaseAdapter
 {
-    private LinkedList<SearchLine> mSearchLines;
+    private LinkedList<SearchLineModel> mSearchLines;
 
-    public SearchLineListAdapter(LinkedList<SearchLine> searchLines)
+    public SearchLineListAdapter(LinkedList<SearchLineModel> searchLines)
     {
         mSearchLines = searchLines;
     }

@@ -13,18 +13,16 @@ import android.widget.TextView;
 
 import com.haikuowuya.bl.LineActivity;
 import com.haikuowuya.bl.R;
+import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.adapter.SearchLineListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentMainBinding;
-import com.haikuowuya.bl.model.BaseModel;
-import com.haikuowuya.bl.model.SearchLine;
+import com.haikuowuya.bl.model.BaseSearchLineModel;
+import com.haikuowuya.bl.model.SearchLineModel;
+import com.haikuowuya.bl.retrofit.APIService;
 import com.haikuowuya.bl.retrofit.SearchLineService;
-import com.haikuowuya.bl.util.BLDataUtils;
-import com.haikuowuya.bl.util.JsoupUtils;
 import com.haikuowuya.bl.util.SoutUtils;
 import com.haikuowuya.bl.util.ToastUtils;
-
-import org.jsoup.nodes.Document;
 
 import java.util.LinkedList;
 
@@ -90,55 +88,43 @@ public class MainFragment extends BaseFragment
 
     private void mockSearch(final String lineNo)
     {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://content.2500city.com/")
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(URLConstants.BASE_API_18_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        SearchLineService searchLineService = retrofit.create(SearchLineService.class);
-        searchLineService.searchLine("SearchBusLine",lineNo).enqueue(new Callback<BaseModel>()
+       APIService.V18 v18  = retrofit.create(APIService.V18.class);
+        v18.searchLine(lineNo).enqueue(new Callback<BaseSearchLineModel>()
         {
             @Override
-            public void onResponse(Call<BaseModel> call, Response<BaseModel> response)
+            public void onResponse(Call<BaseSearchLineModel> call, Response<BaseSearchLineModel> response)
             {
-                SoutUtils.out("str = " + response.body().toString());
+                if (response.isSuccessful())
+                {
+                    LinkedList<SearchLineModel> searchLines = response.body().dataToList();
+                    if(null != searchLines &&!searchLines.isEmpty())
+                    {
+                        mFragmentMainBinding.lvListview.setAdapter(new SearchLineListAdapter(searchLines));
+                        mFragmentMainBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                        {
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                            {
+                                SearchLineModel searchLine = (SearchLineModel) parent.getItemAtPosition(position);
+                                LineActivity.actionLine(mActivity, searchLine);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        ToastUtils.showShortToast(mActivity,"没有数据");
+                    }
+                }
             }
 
             @Override
-            public void onFailure(Call<BaseModel> call, Throwable t)
+            public void onFailure(Call<BaseSearchLineModel> call, Throwable t)
             {
 
             }
         });
-        new Thread()
-        {
-            public void run()
-            {
-                Document document = JsoupUtils.searchFuzzyLineDocument(lineNo);
-                final LinkedList<SearchLine> searchLines = BLDataUtils.htmlToSearchLine(document);
-                mActivity.runOnUiThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        if (!searchLines.isEmpty())
-                        {
-                            mFragmentMainBinding.lvListview.setAdapter(new SearchLineListAdapter(searchLines));
-                            mFragmentMainBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                            {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                                {
-                                    SearchLine searchLine = (SearchLine) parent.getItemAtPosition(position);
-                                    LineActivity.actionLine(mActivity, searchLine);
-                                }
-                            });
-                        }
-                        else
-                        {
-                            ToastUtils.showShortToast(mActivity, "没有数据");
-                        }
-                    }
-                });
-            }
 
-        }.start();
     }
 }
