@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.haikuowuya.bl.base.BaseActivity;
 import com.haikuowuya.bl.fragment.StopFragment;
-import com.haikuowuya.bl.model.LineStopModel;
+import com.haikuowuya.bl.model.LineStopItem;
 
 import java.io.Serializable;
 
@@ -35,7 +35,7 @@ public class StopActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop);
 
-          LineStopModel lineStop = (LineStopModel) getIntent().getSerializableExtra(EXTRA_LINE_STOP);
+          LineStopItem lineStop = (LineStopItem) getIntent().getSerializableExtra(EXTRA_LINE_STOP);
         setActionBarTitle(lineStop.SName);
         getSupportFragmentManager().beginTransaction().add(R.id.frame_container, StopFragment.newInstance(lineStop)).commit();
     }

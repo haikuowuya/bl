@@ -1,7 +1,5 @@
 package com.haikuowuya.bl.model;
 
-import java.util.LinkedList;
-
 /**
  * 说明:
  * 日期:2016/4/23
@@ -9,9 +7,9 @@ import java.util.LinkedList;
  * 创建者：hkwy
  * 修改者：
  **/
-public class BaseStopModel extends  BaseItem
+public class BaseStopModel extends BaseModel
 {
-    public String errorCode;
-    public String errorMessage;
-    public LinkedList<StopModel> list;
+
+    public BusStopInfoModel data;
+
 }

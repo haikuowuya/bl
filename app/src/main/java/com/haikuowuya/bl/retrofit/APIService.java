@@ -1,6 +1,8 @@
 package com.haikuowuya.bl.retrofit;
 
+import com.haikuowuya.bl.model.BaseLineStopModel;
 import com.haikuowuya.bl.model.BaseSearchLineModel;
+import com.haikuowuya.bl.model.BaseStopModel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -25,5 +27,9 @@ public class APIService
          */
         @GET("searchLine")
         Call<BaseSearchLineModel> searchLine(@Query("name") String name);
+        @GET("getLineInfo")
+        Call<BaseLineStopModel> getLineInfo(@Query("Guid")String Guid ,@Query("lng")String lng,@Query("lat")String lat);
+        @GET("getStationInfo")
+        Call<BaseStopModel> getStationInfo(@Query("NoteGuid")String NoteGuid, @Query("lng")String lng,@Query("lat")String lat);
     }
 }

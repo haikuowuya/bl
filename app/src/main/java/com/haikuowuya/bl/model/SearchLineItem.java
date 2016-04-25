@@ -7,7 +7,7 @@ package com.haikuowuya.bl.model;
  * 创建者：hkwy
  * 修改者：
  **/
-public   class  SearchLineModel  extends  BaseItem
+public   class SearchLineItem extends  BaseItem
 {
     public String Guid;
     public String LName;
@@ -16,7 +16,6 @@ public   class  SearchLineModel  extends  BaseItem
     @Override
     public String toString()
     {
-
         return  "Guid = " + Guid + " LName = " +LName + " LDirection = " + LDirection;
     }
 }

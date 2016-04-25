@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 说明:
@@ -16,21 +15,20 @@ import java.util.List;
  * 创建者：hkwy
  * 修改者：
  **/
-public class BaseSearchLineModel extends BaseItem
+public class BaseSearchLineModel extends BaseModel
 {
-    public String errorCode;
-    public String errorMsg;
+
     public JsonObject data;
 
-    public LinkedList<SearchLineModel> dataToList()
+    public LinkedList<SearchLineItem> dataToList()
     {
-        LinkedList<SearchLineModel> searchLineModels = null;
+        LinkedList<SearchLineItem> searchLineModels = null;
         if (null != data)
         {
             JsonArray jsonArray = data.getAsJsonArray("list");
             if(jsonArray != null )
             {
-                Type typeOfT = new TypeToken<LinkedList<SearchLineModel>>()
+                Type typeOfT = new TypeToken<LinkedList<SearchLineItem>>()
                 {
                 }.getType();
                 searchLineModels = new Gson().fromJson(jsonArray.toString(), typeOfT);

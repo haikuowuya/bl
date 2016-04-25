@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.haikuowuya.bl.model.SearchLineModel"/>
+        <import type="com.haikuowuya.bl.model.SearchLineItem"/>
 
         <variable
             name="searchLine"
-            type="SearchLineModel"/>
+            type="SearchLineItem"/>
     </data>
 
     <LinearLayout
@@ -21,6 +21,8 @@
             android:gravity="center"
             android:layout_weight="4"
             android:maxLines="2"
+            style="@style/Base.List.Item.TextViewStyle"
+            android:id="@+id/tv_bus_no"
             android:text="@{searchLine.LName}"
             tools:text="zhagnsan"/>
 
@@ -30,7 +32,7 @@
             android:gravity="center_vertical"
             android:layout_weight="1"
             tools:text="zhagnsan"
-            android:maxLines="2"
+            android:maxLines="2"  style="@style/Base.List.Item.TextViewStyle"
             android:text="@{searchLine.LDirection}"/>
     </LinearLayout>
 </layout>

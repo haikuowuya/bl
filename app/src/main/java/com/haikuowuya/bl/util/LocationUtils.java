@@ -1,12 +1,18 @@
 package com.haikuowuya.bl.util;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
+import com.haikuowuya.bl.base.BaseActivity;
 
 public class LocationUtils {
 
@@ -14,15 +20,15 @@ public class LocationUtils {
 	/**
 	 * 开始定位，获取当前位置
 	 */
-	public static  void startLocation(Context context ,final OnLocationFinishListener listener)
+	public static  void startLocation(Activity activity , final OnLocationFinishListener listener)
 	{
 		if(sAMapLocationClient ==null)
 		{
-			sAMapLocationClient =  new AMapLocationClient(context);
+			sAMapLocationClient =  new AMapLocationClient(activity);
 		}
 		//初始化定位
 		//声明mLocationOption对象
-		  AMapLocationClientOption mLocationOption;
+		  AMapLocationClientOption mLocationOption ;
 		//初始化定位参数
 		mLocationOption = new AMapLocationClientOption();
 		//设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
@@ -39,6 +45,10 @@ public class LocationUtils {
 		mLocationOption.setInterval(2000);
 		//给定位客户端对象设置定位参数
 		sAMapLocationClient.setLocationOption(mLocationOption);
+		if(ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=PackageManager.PERMISSION_GRANTED)
+		{
+			ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, BaseActivity.REQUEST_PERMISSION_LOCATION);
+		}
 		//启动定位
 		sAMapLocationClient.startLocation();
 		sAMapLocationClient.setLocationListener(new AMapLocationListener() {		
@@ -54,7 +64,7 @@ public class LocationUtils {
 				    }
 				 else
 				 {
-					 System.out.println("定位失败");
+					 System.out.println("定位失败 " +amapLocation.getErrorInfo());
 				 }
 			}
 		});

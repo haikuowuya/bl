@@ -2,24 +2,28 @@ package com.haikuowuya.bl.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.haikuowuya.bl.BLApplication;
 import com.haikuowuya.bl.LineActivity;
+import com.haikuowuya.bl.PREF;
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.StopActivity;
-import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.adapter.StopListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
 import com.haikuowuya.bl.model.BaseStopModel;
-import com.haikuowuya.bl.model.LineStopModel;
-import com.haikuowuya.bl.model.SearchLineModel;
-import com.haikuowuya.bl.model.StopModel;
-import com.haikuowuya.bl.retrofit.SearchLineService;
+import com.haikuowuya.bl.model.LineStopItem;
+import com.haikuowuya.bl.model.SearchLineItem;
+import com.haikuowuya.bl.model.StopItem;
+import com.haikuowuya.bl.retrofit.APIService;
+import com.haikuowuya.bl.util.APIServiceUtils;
+import com.haikuowuya.bl.util.SoutUtils;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -27,8 +31,6 @@ import java.util.LinkedList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 说明:
@@ -49,7 +51,37 @@ public class StopFragment extends BaseFragment
     }
 
     private FragmentLineBinding mFragmentLineBinding;
-    private LineStopModel mLineStop;
+    private LineStopItem mLineStop;
+    private Handler mHandler = new Handler();
+
+    private Callback<BaseStopModel> mBaseStopModelCallback = new Callback<BaseStopModel>()
+    {
+        @Override
+        public void onResponse(Call<BaseStopModel> call, Response<BaseStopModel> response)
+        {
+            SoutUtils.out("StopFragment response = " + response.raw().toString() );
+            if(response.isSuccessful())
+            {
+                onGetDataSuccess(response.body());
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<BaseStopModel> call, Throwable t)
+        {
+
+        }
+    };
+
+    private Runnable mDelayRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            doGetData();
+        }
+    };
 
     @Nullable
     @Override
@@ -59,54 +91,41 @@ public class StopFragment extends BaseFragment
         return mFragmentLineBinding.getRoot();
     }
 
+
+
+    private void doGetData()
+    {
+        final APIService.V18 v18 = APIServiceUtils.getV18();
+        final String lng = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LNG, "");
+        final String lat = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LAT, "");
+        v18.getStationInfo(mLineStop.SCode,lng,lat).enqueue(mBaseStopModelCallback);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        doGetData();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        mHandler.removeCallbacks(mDelayRunnable);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
         if (null != getArguments() && null != getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP))
         {
-            mLineStop = (LineStopModel) getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP);
+            mLineStop = (LineStopItem) getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP);
         }
-
-        Retrofit retrofit= new Retrofit.Builder().baseUrl(URLConstants.BASE_API_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        SearchLineService searchLineService = retrofit.create(SearchLineService.class);
-        searchLineService.getBusStopDetail("GetBusStationDetail",mLineStop.SCode).enqueue(new Callback<BaseStopModel>()
-        {
-            @Override
-            public void onResponse(Call<BaseStopModel> call, Response<BaseStopModel> response)
-            {
-                    if(response.isSuccessful())
-                    {
-                        LinkedList<StopModel> stopModels = response.body().list;
-                        if(null != stopModels &&!stopModels.isEmpty())
-                        {
-                            mFragmentLineBinding.lvListview.setAdapter(new StopListAdapter(stopModels));
-                            mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                            {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                                {
-                                    StopModel stopModel = (StopModel) parent.getItemAtPosition(position);
-                                    SearchLineModel searchLine = new SearchLineModel();
-                                    searchLine.LName = stopModel.LName;
-                                    searchLine.Guid = stopModel.Guid;
-                                    searchLine.LDirection = stopModel.LDirection;
-                                    LineActivity.actionLine(mActivity,searchLine);
-                                }
-                            });
-                        }
-                    }
-            }
-            @Override
-            public void onFailure(Call<BaseStopModel> call, Throwable t)
-            {
-
-            }
-        });
-
         if (null != mLineStop)
         {
-            final LinkedList<StopModel> stopItems = new LinkedList<>();
+            final LinkedList<StopItem> stopItems = new LinkedList<>();
             new Thread()
             {
                 public void run()
@@ -149,7 +168,7 @@ public class StopFragment extends BaseFragment
                                                 stopCar = tdElements.get(2).text();
                                                 stopCarTime = tdElements.get(3).text();
                                                 stopSpacing = tdElements.get(4).text();
-                                                StopModel stopItem = new StopModel();
+                                                StopItem stopItem = new StopItem();
                                                 stopItem.lineHref = lineHref;
                                                 stopItem.lineNo = lineNo;
                                                 stopItem.stopCar = stopCar;
@@ -169,7 +188,7 @@ public class StopFragment extends BaseFragment
                                                     @Override
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                                                     {
-                                                        StopModel stopItem = (StopModel) parent.getItemAtPosition(position);
+                                                        StopItem stopItem = (StopItem) parent.getItemAtPosition(position);
                                                         SearchLine searchLine = new SearchLine();
                                                         searchLine.lineHref = stopItem.lineHref;
                                                         searchLine.lineNo = stopItem.lineNo;
@@ -201,7 +220,29 @@ public class StopFragment extends BaseFragment
                     }
                 }
             }.start();
-
         }
+
+    }
+    public void onGetDataSuccess(BaseStopModel baseStopModel )
+    {
+        LinkedList<StopItem> stopModels = baseStopModel.data.list;
+        if(null != stopModels &&!stopModels.isEmpty())
+        {
+            mFragmentLineBinding.lvListview.setAdapter(new StopListAdapter(stopModels));
+            mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    StopItem stopModel = (StopItem) parent.getItemAtPosition(position);
+                    SearchLineItem searchLine = new SearchLineItem();
+                    searchLine.LName = stopModel.LName;
+                    searchLine.Guid = stopModel.Guid;
+                    searchLine.LDirection = stopModel.LDirection;
+                    LineActivity.actionLine(mActivity,searchLine);
+                }
+            });
+        }
+        mHandler.postDelayed(mDelayRunnable, BLApplication.DELAY_TIME_IN_MM);
     }
 }

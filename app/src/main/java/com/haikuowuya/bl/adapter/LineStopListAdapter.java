@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.databinding.LineStopListItemBinding;
-import com.haikuowuya.bl.model.LineStopModel;
+import com.haikuowuya.bl.model.LineStopItem;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -24,9 +24,9 @@ import java.util.LinkedList;
  **/
 public class LineStopListAdapter extends BaseAdapter
 {
-    private LinkedList<LineStopModel> mLineStops;
+    private LinkedList<LineStopItem> mLineStops;
 
-    public LineStopListAdapter(LinkedList<LineStopModel> lineStops)
+    public LineStopListAdapter(LinkedList<LineStopItem> lineStops)
     {
         mLineStops = lineStops;
     }
@@ -63,11 +63,11 @@ public class LineStopListAdapter extends BaseAdapter
         {
             lineStopListItemBinding = (LineStopListItemBinding) convertView.getTag();
         }
-        LineStopModel lineStop = mLineStops.get(position);
+        LineStopItem lineStop = mLineStops.get(position);
         lineStopListItemBinding.setLineStop(lineStop);
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) lineStopListItemBinding.ivBus.getLayoutParams();
-        if (!TextUtils.isEmpty(lineStop.BusInfo) && !TextUtils.isEmpty(lineStop.InTime))
+        if (!TextUtils.isEmpty(lineStop.InTime)  )
         {
             if (!isArrivedValidated(lineStop))
             {
@@ -104,7 +104,7 @@ public class LineStopListAdapter extends BaseAdapter
      * @param lineStop
      * @return true：到站车辆有效
      */
-    private boolean isArrivedValidated(LineStopModel lineStop)
+    private boolean isArrivedValidated(LineStopItem lineStop)
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

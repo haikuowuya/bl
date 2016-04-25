@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 
 import com.haikuowuya.bl.base.BaseActivity;
 import com.haikuowuya.bl.fragment.LineFragment;
-import com.haikuowuya.bl.model.SearchLine;
-import com.haikuowuya.bl.model.SearchLineModel;
+import com.haikuowuya.bl.model.SearchLineItem;
 
 import java.io.Serializable;
 
@@ -36,7 +34,7 @@ public class LineActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line);
-        SearchLineModel searchLine = (SearchLineModel) getIntent().getSerializableExtra(EXTRA_SEARCH_LINE);
+        SearchLineItem searchLine = (SearchLineItem) getIntent().getSerializableExtra(EXTRA_SEARCH_LINE);
         setActionBarTitle(searchLine.LName);
         setActionBarSubTitle(searchLine.LDirection);
         getSupportFragmentManager().beginTransaction().add(R.id.frame_container, LineFragment.newInstance(searchLine)).commit();

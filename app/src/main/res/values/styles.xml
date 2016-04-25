@@ -56,5 +56,19 @@
         <item name="android:fragmentCloseEnterAnimation">@anim/base_stay_orig</item>
         <item name="android:fragmentCloseExitAnimation">@anim/base_slide_right_out</item>
     </style>
+    <!--List Item Style-->
+
+    <style name="Base.List.Item.TextViewStyle" >
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+
+
+    </style>
+    <style name="Base.List.Item"></style>
+    <style name="Base.List"></style>
+    <style name="Base"></style>
+    <!--List Item Style-->
 
 </resources>

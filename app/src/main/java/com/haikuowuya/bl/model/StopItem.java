@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 创建者：hkwy
  * 修改者：
  **/
-public class StopModel extends BaseObservable implements Serializable
+public class StopItem extends  BaseItem
 {
     public String Guid;
     public String LName;
@@ -20,5 +20,6 @@ public class StopModel extends BaseObservable implements Serializable
     public String  InTime;
     public String SName;
     public String Distince;
+    public String Distince_str;
 
 }

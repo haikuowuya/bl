@@ -1,6 +1,7 @@
 package com.haikuowuya.bl.adapter;
 
 import android.databinding.DataBindingUtil;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,8 @@ import android.widget.BaseAdapter;
 
 import com.haikuowuya.bl.R;
 import com.haikuowuya.bl.databinding.StopListItemBinding;
-import com.haikuowuya.bl.model.StopModel;
+import com.haikuowuya.bl.model.StopItem;
+import com.haikuowuya.bl.util.SoutUtils;
 
 import java.util.LinkedList;
 
@@ -21,9 +23,9 @@ import java.util.LinkedList;
  **/
 public class StopListAdapter extends BaseAdapter
 {
-    private LinkedList<StopModel> mStopItems;
+    private LinkedList<StopItem> mStopItems;
 
-    public StopListAdapter(LinkedList<StopModel> stopItems)
+    public StopListAdapter(LinkedList<StopItem> stopItems)
     {
         mStopItems = stopItems;
     }
@@ -60,8 +62,18 @@ public class StopListAdapter extends BaseAdapter
         {
             stopListItemBinding = (StopListItemBinding) convertView.getTag();
         }
-        stopListItemBinding.setStopItem(mStopItems.get(position));
-
+        StopItem stopItem = mStopItems.get(position);
+        stopListItemBinding.setStopItem(stopItem);
+        stopListItemBinding.tvBusDirection.setText( handleBusDirection(stopItem.LDirection));
         return convertView;
+    }
+
+    private String handleBusDirection(String direction)
+    {
+        if(!TextUtils.isEmpty(direction) && direction.contains("=>"))
+        {
+            direction = direction.replace("=>","\n");
+        }
+        return  direction;
     }
 }

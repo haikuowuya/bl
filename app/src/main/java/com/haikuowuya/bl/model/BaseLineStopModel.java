@@ -9,9 +9,15 @@ import com.google.gson.JsonObject;
  * 创建者：hkwy
  * 修改者：
  **/
-public class BaseLineStopModel extends  BaseItem
+public class BaseLineStopModel extends  BaseModel
 {
-    public String errorCode;
-    public String errorMessage;
-    public BusLineInfoModel list;
+
+    public BusLineInfoModel data;
+
+    @Override
+    public String toString()
+    {
+
+        return  "errorCode = " + errorCode + " errorMsg = " + errorMsg + " data = " + data.toString();
+    }
 }
