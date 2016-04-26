@@ -2,6 +2,8 @@ package com.haikuowuya.bl.util;
 
 import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.retrofit.APIService;
+import com.haikuowuya.bl.retrofit.DocumentConverterFactory;
+import com.haikuowuya.bl.retrofit.StringConverterFactory;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,7 +23,15 @@ public class APIServiceUtils
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         APIService.V18 v18 = retrofit.create(APIService.V18.class);
-
         return  v18;
+    }
+
+    public static APIService.WEB getWeb()
+    {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(URLConstants.BUS_LINE_QUERY_PREFIX)
+                .addConverterFactory(DocumentConverterFactory.create())
+                .build();
+        APIService.WEB web = retrofit.create(APIService.WEB.class);
+        return  web;
     }
 }

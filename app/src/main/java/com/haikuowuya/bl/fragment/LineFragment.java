@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.haikuowuya.bl.BLApplication;
+import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.LineActivity;
 import com.haikuowuya.bl.PREF;
 import com.haikuowuya.bl.R;
@@ -19,15 +20,22 @@ import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
 import com.haikuowuya.bl.model.BaseLineStopModel;
 import com.haikuowuya.bl.model.LineStopItem;
+import com.haikuowuya.bl.model.SearchLine;
 import com.haikuowuya.bl.model.SearchLineItem;
 import com.haikuowuya.bl.retrofit.APIService;
 import com.haikuowuya.bl.util.APIServiceUtils;
+import com.haikuowuya.bl.util.BLDataUtils;
 import com.haikuowuya.bl.util.SoutUtils;
 import com.haikuowuya.bl.util.ToastUtils;
 
+import org.jsoup.helper.DataUtil;
+import org.jsoup.nodes.Document;
+
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -143,11 +151,46 @@ public class LineFragment extends BaseFragment
         }
         else
         {
-            ToastUtils.showShortToast(mActivity, "没有数据");
+            tryAnotherMethod(baseLineStopModel);
         }
-        mHandler.postDelayed(mDelayRunnable, BLApplication.DELAY_TIME_IN_MM);
+        mHandler.postDelayed(mDelayRunnable, Constants.DELAY_TIME_IN_MM);
     }
 
+    /***
+     * 没有数据时，尝试另外一种方法获取
+     * @param baseLineStopModel:之前接口获取的数据
+     */
+    private void tryAnotherMethod(final BaseLineStopModel baseLineStopModel)
+    {
+        APIServiceUtils.getWeb().getLineInfo(mSearchLine.Guid).enqueue(new Callback<Document>()
+        {
+            public void onResponse(Call<Document> call, Response<Document> response)
+            {
+//                SoutUtils.out("LineFragment web  response = " + response.raw().toString() );
+//                SoutUtils.out("数据 = " + response.body());
+                if(response.isSuccessful())
+                {
+                    Document document = response.body();
+                    LinkedList<LineStopItem> lineStopItems = BLDataUtils.htmlToLineStop(document);
+                    if (null != lineStopItems && !lineStopItems.isEmpty())
+                    {
+                        baseLineStopModel.data.StandInfo = lineStopItems;
+                        onGetDataSuccess(baseLineStopModel);
+                    }
+                    else
+                    {
+                        ToastUtils.showShortToast(mActivity, "没有数据");
+                    }
+                }
+
+            }
+            @Override
+            public void onFailure(Call<Document> call, Throwable t)
+            {
+
+            }
+        });
+    }
     @Override
     public void onPause()
     {

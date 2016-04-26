@@ -1,6 +1,10 @@
 package com.haikuowuya.bl.util;
 
+import android.text.TextUtils;
+
+import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.URLConstants;
+import com.haikuowuya.bl.model.LineStopItem;
 import com.haikuowuya.bl.model.SearchLine;
 
 import org.jsoup.nodes.Document;
@@ -65,5 +69,56 @@ public class BLDataUtils
             }
         }
         return  searchLines;
+    }
+
+
+    public static LinkedList<LineStopItem> htmlToLineStop(Document document)
+    {
+        final LinkedList<LineStopItem> lineStopItems = new LinkedList<>();
+        if (null != document)
+        {
+            Elements bodyElement = document.getElementsByTag("tbody");
+            if(bodyElement != null && !bodyElement.isEmpty())
+            {
+                Element element = bodyElement.get(0);
+                Elements trElements = element.getElementsByTag("tr");
+                if (null != trElements && !trElements.isEmpty())
+                {
+                    if (trElements.size() > 1)
+                    {
+                        for (Element tmpElement : trElements)
+                        {
+                            Elements tdElements = tmpElement.getElementsByTag("td");
+                            /* <td><a href="APTSLine.aspx?cid=175ecd8d-c39d-4116-83ff-109b946d7cb4&amp;LineGuid=9d090af5-c5c6-4db8-b34e-2e8af4f63216&amp;LineInfo=1(公交一路新村首末站)">1</a></td><td>公交一路新村首末站</td> */
+                            // SoutUtils.out(tdElements);
+                            if (null != tdElements && tdElements.size() == 4)
+                            {
+                             LineStopItem lineStopItem = new LineStopItem();
+                                String href;
+                                String lineName;
+                                String sCode ;
+                                String inTime;
+                                Element aElement = tdElements.get(0).getElementsByTag("a").get(0);
+                                lineName = aElement.text();
+                                href = URLConstants.BUS_LINE_QUERY_PREFIX + aElement.attr("href");
+                                sCode = tdElements.get(1).text();
+                                inTime = tdElements.get(3).text();
+                                /*lineNo = 1 href = http://www.szjt.gov.cn/BusQuery/APTSLine.aspx?cid=175ecd8d-c39d-4116-83ff-109b946d7cb4&LineGuid=9d090af5-c5c6-4db8-b34e-2e8af4f63216&LineInfo=1(公交一路新村首末站) lineName = 公交一路新村首末站*/
+                                // SoutUtils.out("lineNo = " + lineNo+ " href = " + href + " lineName = " + lineName );
+                                lineStopItem.SCode = sCode;
+                                lineStopItem.SName = lineName;
+                                lineStopItem.InTime = inTime;
+                                if(!TextUtils.isEmpty(inTime))
+                                {
+                                    lineStopItem.s_num_str = Constants.IN_STOP + "\n" + inTime;
+                                }
+                                lineStopItems.add(lineStopItem);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return  lineStopItems;
     }
 }

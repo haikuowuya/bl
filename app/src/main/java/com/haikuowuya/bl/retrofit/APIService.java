@@ -1,9 +1,13 @@
 package com.haikuowuya.bl.retrofit;
 
+import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.model.BaseLineStopModel;
 import com.haikuowuya.bl.model.BaseSearchLineModel;
 import com.haikuowuya.bl.model.BaseStopModel;
 
+import org.jsoup.nodes.Document;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -17,6 +21,34 @@ import retrofit2.http.Query;
  **/
 public class APIService
 {
+    public static  interface WEB
+    {
+        @GET(URLConstants.LINE_SEARCH)
+        Call<Document> getLineInfo(@Query("LineGuid")String LineGuid);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static interface   V18
     {
         /****

@@ -18,4 +18,10 @@ public class SearchLine extends BaseObservable implements Serializable
     public String lineName;
     public String lineHref;
 
+    @Override
+    public String toString()
+    {
+
+        return  "lineNo = " + lineNo + " lineName = " + lineName + " lineHref = " + lineHref;
+    }
 }

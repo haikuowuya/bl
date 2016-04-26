@@ -11,7 +11,6 @@ import android.app.Application;
  **/
 public class BLApplication extends Application
 {
-    public static  final  long DELAY_TIME_IN_MM = 10*1000L;
     @Override
     public void onCreate()
     {

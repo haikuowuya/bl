@@ -1,3 +1,11 @@
+
+web
+
+http://www.szjt.gov.cn/BusQuery/APTSLine.aspx?cid=175ecd8d-c39d-4116-83ff-109b946d7cb4&LineGuid=d9797d7a-c1fa-4209-980e-7944dac93651
+
+web
+
+
 Line 1
 http://content.2500city.com/Json?method=SearchBusLine&appVersion=3.6&deviceID=358094050288555&lineName=1
 

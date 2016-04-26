@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.haikuowuya.bl.BLApplication;
+import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.LineActivity;
 import com.haikuowuya.bl.PREF;
 import com.haikuowuya.bl.R;
@@ -243,6 +244,6 @@ public class StopFragment extends BaseFragment
                 }
             });
         }
-        mHandler.postDelayed(mDelayRunnable, BLApplication.DELAY_TIME_IN_MM);
+        mHandler.postDelayed(mDelayRunnable, Constants.DELAY_TIME_IN_MM);
     }
 }
