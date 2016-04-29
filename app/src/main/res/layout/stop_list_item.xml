@@ -49,6 +49,7 @@
             tools:text="zhagnsan"/>
 
         <TextView
+
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:gravity="center"

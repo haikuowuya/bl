@@ -31,6 +31,8 @@ public class URLConstants
     //public static final String LINE_SEARCH = BUS_LINE_QUERY_PREFIX + "APTSLine.aspx?cid=175ecd8d-c39d-4116-83ff-109b946d7cb4";
     public static final String LINE_SEARCH =  "APTSLine.aspx?cid=175ecd8d-c39d-4116-83ff-109b946d7cb4";
 
+    public static final String  WEB_LINE_SEARCH=BUS_LINE_QUERY_PREFIX+LINE_SEARCH;
+
     public static String getSearchBusLineByLineNoUrl(String lineNo)
     {
         return String.format(SEARCH_BUS_LINE_BY_LINE_NO, lineNo);

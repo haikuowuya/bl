@@ -24,7 +24,10 @@ import com.haikuowuya.bl.model.SearchLineItem;
 import com.haikuowuya.bl.model.StopItem;
 import com.haikuowuya.bl.retrofit.APIService;
 import com.haikuowuya.bl.util.APIServiceUtils;
+import com.haikuowuya.bl.util.BLDataUtils;
 import com.haikuowuya.bl.util.SoutUtils;
+
+import org.jsoup.nodes.Document;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -100,6 +103,23 @@ public class StopFragment extends BaseFragment
         final String lng = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LNG, "");
         final String lat = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LAT, "");
         v18.getStationInfo(mLineStop.SCode,lng,lat).enqueue(mBaseStopModelCallback);
+        APIServiceUtils.getWeb().getStationInfo(mLineStop.SCode, mLineStop.SName).enqueue(new Callback<Document>()
+        {
+            @Override
+            public void onResponse(Call<Document> call, Response<Document> response)
+            {
+                if(response.isSuccessful())
+                {
+                    BLDataUtils.htmlToStop(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Document> call, Throwable t)
+            {
+
+            }
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.haikuowuya.bl.util;
 
+import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.URLConstants;
 
 import org.jsoup.Connection;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -25,7 +27,6 @@ import java.util.LinkedHashMap;
  **/
 public class JsoupUtils
 {
-    private static final String LINE_NO = "ctl00$MainContent$LineName";
 
     public static Document searchFuzzyLineDocument(String lineNo)
     {
@@ -33,15 +34,14 @@ public class JsoupUtils
         try
         {
             LinkedHashMap<String, String> linkedHashMap = fetchPostParams();
-            linkedHashMap.put(LINE_NO, lineNo);
-
-            SoutUtils.out("searchFuzzyLineDocument lineHref = " + URLConstants.LINE_SEARCH);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(URLConstants.LINE_SEARCH).openConnection();
+            linkedHashMap.put(Constants.LINE_NO, lineNo);
+            SoutUtils.out("searchFuzzyLineDocument lineHref = " + URLConstants.WEB_LINE_SEARCH);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(URLConstants.WEB_LINE_SEARCH).openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setRequestMethod("POST");
             OutputStream outputStream = httpURLConnection.getOutputStream();
             String postStr = mapToString(linkedHashMap);
-            SoutUtils.out("post提交参数 = " + postStr );
+
             outputStream.write(postStr.getBytes());
             int responseCode = httpURLConnection.getResponseCode();
             if (httpURLConnection != null && responseCode == 200)
@@ -56,7 +56,7 @@ public class JsoupUtils
         }
         return document;
     }
-    private static  String mapToString(LinkedHashMap<String, String> map)
+    public  static  String mapToString(HashMap<String, String> map)
     {
         StringBuffer stringBuffer = new StringBuffer();
         if(null != map &&!map.isEmpty())
@@ -66,8 +66,11 @@ public class JsoupUtils
                 stringBuffer.append(key);
                 stringBuffer.append("=");
                 stringBuffer.append(map.get(key));
+                stringBuffer.append("&");
             }
+            stringBuffer.deleteCharAt(stringBuffer.length()-1);
         }
+        SoutUtils.out("post提交参数 = " + stringBuffer );
         return  stringBuffer.toString();
     }
 
@@ -76,8 +79,8 @@ public class JsoupUtils
         LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
         try
         {
-            SoutUtils.out("fetchPostParams lineHref = " + URLConstants.LINE_SEARCH);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(URLConstants.LINE_SEARCH).openConnection();
+            SoutUtils.out("fetchPostParams lineHref = " + URLConstants.WEB_LINE_SEARCH);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(URLConstants.WEB_LINE_SEARCH).openConnection();
             int responseCode = httpURLConnection.getResponseCode();
             Document document = null;
             if (httpURLConnection != null && responseCode == 200)
@@ -105,6 +108,8 @@ public class JsoupUtils
         }
         return linkedHashMap;
     }
+
+
 
     private static Connection getRequestConnect(String url)
     {

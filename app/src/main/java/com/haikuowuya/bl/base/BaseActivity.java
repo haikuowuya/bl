@@ -35,6 +35,7 @@ public class BaseActivity extends AppCompatActivity
         mSharedPreferences = getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
         mActionBar = getSupportActionBar();
         configActionBar();
+
         super.onCreate(savedInstanceState);
     }
 

@@ -1,5 +1,6 @@
 package com.haikuowuya.bl.retrofit;
 
+import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.model.BaseLineStopModel;
 import com.haikuowuya.bl.model.BaseSearchLineModel;
@@ -7,10 +8,17 @@ import com.haikuowuya.bl.model.BaseStopModel;
 
 import org.jsoup.nodes.Document;
 
+import java.util.HashMap;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * 说明:
@@ -26,7 +34,15 @@ public class APIService
         @GET(URLConstants.LINE_SEARCH)
         Call<Document> getLineInfo(@Query("LineGuid")String LineGuid);
 
+        @GET(URLConstants.LINE_SEARCH)
+        Call<Document> fetchPostParams();
 
+        @FormUrlEncoded
+        @POST(URLConstants.LINE_SEARCH)
+        Call<Document> searchLine(@FieldMap  HashMap<String,String> postParams);
+
+        @GET(URLConstants.LINE_SEARCH)
+        Call<Document> getStationInfo(@Query("StandCode")String standCode,@Query("StandName")String standName );
     }
 
 

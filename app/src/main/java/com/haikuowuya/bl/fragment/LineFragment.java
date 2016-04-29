@@ -19,6 +19,7 @@ import com.haikuowuya.bl.adapter.LineStopListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
 import com.haikuowuya.bl.model.BaseLineStopModel;
+import com.haikuowuya.bl.model.BusLineInfoModel;
 import com.haikuowuya.bl.model.LineStopItem;
 import com.haikuowuya.bl.model.SearchLine;
 import com.haikuowuya.bl.model.SearchLineItem;
@@ -125,7 +126,10 @@ public class LineFragment extends BaseFragment
         final APIService.V18 v18 = APIServiceUtils.getV18();
         final String lng = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LNG, "");
         final String lat = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LAT, "");
-        v18.getLineInfo(mSearchLine.Guid, lng, lat).enqueue(mLineStopModelCallback);
+     //   v18.getLineInfo(mSearchLine.Guid, lng, lat).enqueue(mLineStopModelCallback);
+        BaseLineStopModel baseLineStopModel = new BaseLineStopModel();
+        baseLineStopModel.data =  new BusLineInfoModel();
+        tryAnotherMethod(baseLineStopModel);
     }
 
     /***

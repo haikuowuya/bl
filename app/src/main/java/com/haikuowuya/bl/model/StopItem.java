@@ -1,6 +1,9 @@
 package com.haikuowuya.bl.model;
 
 import android.databinding.BaseObservable;
+import android.text.TextUtils;
+
+import com.haikuowuya.bl.Constants;
 
 import java.io.Serializable;
 
@@ -22,4 +25,12 @@ public class StopItem extends  BaseItem
     public String Distince;
     public String Distince_str;
 
+    public String getDistince_str()
+    {
+        if(TextUtils.isEmpty(Distince_str) &&!TextUtils.isEmpty(Distince))
+        {
+            Distince_str = Distince+ Constants.STOP;
+        }
+        return Distince_str;
+    }
 }
