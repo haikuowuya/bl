@@ -45,6 +45,8 @@
         <activity android:name=".LineActivity"/>
         <activity android:name=".StopActivity"/>
         <activity android:name=".SettingsActivity"/>
+        <activity android:name=".RxActivity"/>
+        <activity android:name=".RxOperatorActivity"/>
 
         <!--高德地图KEY配置-->
         <meta-data android:name="com.amap.api.v2.apikey" android:value="e42cdad77551c4e598bc8aa6663c6586"/>

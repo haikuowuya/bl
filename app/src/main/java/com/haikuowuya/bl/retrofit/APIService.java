@@ -1,6 +1,5 @@
 package com.haikuowuya.bl.retrofit;
 
-import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.URLConstants;
 import com.haikuowuya.bl.model.BaseLineStopModel;
 import com.haikuowuya.bl.model.BaseSearchLineModel;
@@ -10,15 +9,13 @@ import org.jsoup.nodes.Document;
 
 import java.util.HashMap;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+import rx.Observable;
 
 /**
  * 说明:
@@ -41,8 +38,19 @@ public class APIService
         @POST(URLConstants.LINE_SEARCH)
         Call<Document> searchLine(@FieldMap  HashMap<String,String> postParams);
 
-        @GET(URLConstants.LINE_SEARCH)
+        @GET(URLConstants.STOP_SEARCH)
         Call<Document> getStationInfo(@Query("StandCode")String standCode,@Query("StandName")String standName );
+    }
+
+
+    public static  interface  RX
+    {
+        @GET(URLConstants.LINE_SEARCH)
+        Observable<Document> fetchPostParams();
+
+        @FormUrlEncoded
+        @POST(URLConstants.LINE_SEARCH)
+        Observable<Document> searchLine(@FieldMap  HashMap<String,String> postParams);
     }
 
 

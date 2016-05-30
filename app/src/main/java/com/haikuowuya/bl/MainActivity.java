@@ -9,19 +9,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 import com.haikuowuya.bl.base.BaseActivity;
 import com.haikuowuya.bl.fragment.MainFragment;
 
-public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends BaseActivity   implements NavigationView.OnNavigationItemSelectedListener
 {
-
-    @Override
+  private MainFragment mMainFragment;
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -35,7 +33,8 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_container, MainFragment.newInstance()).commit();
+        mMainFragment= MainFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().add(R.id.frame_container,  mMainFragment).commit();
     }
 
     @Override
@@ -44,28 +43,33 @@ public class MainActivity extends BaseActivity
         getMenuInflater().inflate(R.menu.activity_main,menu);
         final MenuItem menuItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView)  MenuItemCompat.getActionView(menuItem);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-//        {
-//            @Override
-//            public boolean onQueryTextSubmit(String query)
-//            {
-//                MenuItemCompat.collapseActionView(menuItem);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText)
-//            {
-//                return false;
-//            }
-//        });
+          searchView.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+            {
+                @Override
+                public boolean onQueryTextSubmit(String query)
+                {
+                    MenuItemCompat.collapseActionView(menuItem);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText)
+                {
+                    if(!TextUtils.isEmpty(newText))
+                    {
+                        mMainFragment.doGetData(newText);
+                    }
+                    return false;
+                }
+            });
+
         return  true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -102,18 +106,21 @@ public class MainActivity extends BaseActivity
         else if (id == R.id.nav_manage)
         {
         }
-        else if (id == R.id.nav_share)
-        {
-        }
-        else if (id == R.id.nav_send)
+        else if (id == R.id.nav_rx)
         {
             new Handler().postDelayed(new Runnable()
             {
                 public void run()
                 {
-                    SettingsActivity.actionSettings(mActivity);
+                    RxActivity.actionRx(mActivity);
                 }
             },400L);
+            //use lambda
+        // new Handler().postDelayed(()->RxActivity.actionRx(mActivity),400L);
+        }
+        else if (id == R.id.nav_settings)
+        {
+           new Handler().postDelayed(()->SettingsActivity.actionSettings(mActivity),400L);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

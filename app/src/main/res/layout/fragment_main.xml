@@ -10,6 +10,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_margin="8dp"
+            android:visibility="gone"
             android:layout_height="48dp">
             <EditText
                 android:id="@+id/et_search"
@@ -19,7 +20,7 @@
                 android:singleLine="true"
                 android:inputType="numberSigned"
                 android:imeOptions="actionSearch"
-                android:background="@drawable/search_line_edittext_background"
+                android:background="@drawable/et_border_search_line_background"
                 android:layout_height="match_parent"/>
             <ImageView
                 android:id="@+id/iv_search"

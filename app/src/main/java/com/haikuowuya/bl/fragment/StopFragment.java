@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.haikuowuya.bl.BLApplication;
 import com.haikuowuya.bl.Constants;
 import com.haikuowuya.bl.LineActivity;
 import com.haikuowuya.bl.PREF;
@@ -19,6 +18,7 @@ import com.haikuowuya.bl.adapter.StopListAdapter;
 import com.haikuowuya.bl.base.BaseFragment;
 import com.haikuowuya.bl.databinding.FragmentLineBinding;
 import com.haikuowuya.bl.model.BaseStopModel;
+import com.haikuowuya.bl.model.BusStopInfoModel;
 import com.haikuowuya.bl.model.LineStopItem;
 import com.haikuowuya.bl.model.SearchLineItem;
 import com.haikuowuya.bl.model.StopItem;
@@ -102,7 +102,7 @@ public class StopFragment extends BaseFragment
         final APIService.V18 v18 = APIServiceUtils.getV18();
         final String lng = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LNG, "");
         final String lat = mActivity.getSharedPreferences().getString(PREF.PREF_LOCATION_LAT, "");
-        v18.getStationInfo(mLineStop.SCode,lng,lat).enqueue(mBaseStopModelCallback);
+         v18.getStationInfo(mLineStop.SCode,lng,lat).enqueue(mBaseStopModelCallback);
         APIServiceUtils.getWeb().getStationInfo(mLineStop.SCode, mLineStop.SName).enqueue(new Callback<Document>()
         {
             @Override
@@ -110,7 +110,11 @@ public class StopFragment extends BaseFragment
             {
                 if(response.isSuccessful())
                 {
-                    BLDataUtils.htmlToStop(response.body());
+                    LinkedList<StopItem> stopItems =   BLDataUtils.htmlToStop(response.body());
+                    BaseStopModel baseStopModel = new BaseStopModel();
+                    baseStopModel.data = new BusStopInfoModel();
+                    baseStopModel.data.list = stopItems;
+                  // onGetDataSuccess(baseStopModel);
                 }
             }
 
@@ -144,105 +148,6 @@ public class StopFragment extends BaseFragment
         {
             mLineStop = (LineStopItem) getArguments().getSerializable(StopActivity.EXTRA_LINE_STOP);
         }
-        if (null != mLineStop)
-        {
-            final LinkedList<StopItem> stopItems = new LinkedList<>();
-            new Thread()
-            {
-                public void run()
-                {
-                    try
-                    {
-                        /*
-                        SoutUtils.out("lineHref = " + mLineStop.stopHref);
-                        HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(mLineStop.stopHref).openConnection();
-                        int responseCode = httpURLConnection.getResponseCode();
-                        if (httpURLConnection != null && responseCode == 200)
-                        {
-                            InputStream inputStream = httpURLConnection.getInputStream();
-                            Document document = DataUtil.load(inputStream, "utf-8", "");
-                            if (null != document)
-                            {
-                                Element element = document.getElementsByTag("tbody").get(0);
-                                Elements trElements = element.getElementsByTag("tr");
-                                if (null != trElements && !trElements.isEmpty())
-                                {
-                                    if (trElements.size() > 1)
-                                    {
-                                        for (Element tmpElement : trElements)
-                                        {
-                                            Elements tdElements = tmpElement.getElementsByTag("td");
-
-                                            if (null != tdElements && tdElements.size() == 5)
-                                            {
-
-                                                String lineNo;
-                                                String lineHref;
-                                                String stopName;
-                                                String stopCar;
-                                                String stopSpacing;
-                                                String stopCarTime;
-                                                Element aElement = tdElements.get(0).getElementsByTag("a").get(0);
-                                                lineNo = aElement.text();
-                                                lineHref = URLConstants.BUS_LINE_QUERY_PREFIX + aElement.attr("href");
-                                                stopName = tdElements.get(1).text();
-                                                stopCar = tdElements.get(2).text();
-                                                stopCarTime = tdElements.get(3).text();
-                                                stopSpacing = tdElements.get(4).text();
-                                                StopItem stopItem = new StopItem();
-                                                stopItem.lineHref = lineHref;
-                                                stopItem.lineNo = lineNo;
-                                                stopItem.stopCar = stopCar;
-                                                stopItem.lineName = stopName;
-                                                stopItem.stopCarTime = stopCarTime;
-                                                stopItem.stopSpacing = stopSpacing;
-                                                stopItems.add(stopItem);
-                                            }
-                                        }
-                                        mActivity.runOnUiThread(new Runnable()
-                                        {
-                                            public void run()
-                                            {
-                                                mFragmentLineBinding.lvListview.setAdapter(new StopListAdapter(stopItems));
-                                                mFragmentLineBinding.lvListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                                                {
-                                                    @Override
-                                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                                                    {
-                                                        StopItem stopItem = (StopItem) parent.getItemAtPosition(position);
-                                                        SearchLine searchLine = new SearchLine();
-                                                        searchLine.lineHref = stopItem.lineHref;
-                                                        searchLine.lineNo = stopItem.lineNo;
-                                                        searchLine.lineName = stopItem.lineName;
-                                                        LineActivity.actionLine(mActivity,searchLine);
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        mActivity.runOnUiThread(new Runnable()
-                                        {
-                                            public void run()
-                                            {
-                                                ToastUtils.showShortToast(mActivity, "没有数据");
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                        */
-
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-        }
-
     }
     public void onGetDataSuccess(BaseStopModel baseStopModel )
     {

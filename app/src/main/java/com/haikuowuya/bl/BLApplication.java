@@ -15,5 +15,13 @@ public class BLApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+        /**
+         * 内存泄漏检测
+         */
+      // LeakCanary.install(this);
+        /***
+         * crash展示
+         */
+    //    CrashWoodpecker.init(this);
     }
 }

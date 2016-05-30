@@ -27,4 +27,13 @@ public class PREF
      * 定位的地址
      */
     public static  final  String PREF_LOCATION_ADDRESS="pref_location_address";
+
+    /***
+     * 数据来自APP
+     */
+    public static final String PREF_DATA_FROM_APP="pref_data_from_app";
+    /***
+     * 数据来自WEB
+     */
+    public static final String PREF_DATA_FROM_WEB="pref_data_from_web";
 }
